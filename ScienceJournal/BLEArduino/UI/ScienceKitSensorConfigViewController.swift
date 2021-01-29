@@ -28,6 +28,7 @@ class ScienceKitSensorConfigViewController: ScienceJournalViewController {
     static let viewInsets = UIEdgeInsets(top: 18, left: 18, bottom: 18, right: 18)
     static let verticalViewInsets = viewInsets.top + viewInsets.bottom
     static let verticalSpacing: CGFloat = 10
+    static let preferredWidth: CGFloat = 200
   }
 
   var options = [BLEArduinoSensorConfig]() {
@@ -41,22 +42,27 @@ class ScienceKitSensorConfigViewController: ScienceJournalViewController {
       typeSelector.configType = config
     }
   }
+  
+  var configNote:String?
 
   let okButton = MDCFlatButton()
 
   private let stackView = UIStackView()
   private let headerLabel = UILabel()
+  private let configNoteLabel = UILabel()
   private let typeSelector = ScienceKitSensorConfigSelectorView()
 
   /// The height required to display the view's contents depending on type selection.
   private var totalHeight: CGFloat {
     let headerHeight =
       headerLabel.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+    // FIXME : Calcualte using systemLayoutSizeFitting
+    let configNoteHeight = configNoteLabel.frame.size.height
     let okButtonHeight = okButton.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
     let typeSelectorHeight =
       typeSelector.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
 
-    let height = headerHeight + okButtonHeight + typeSelectorHeight + Metrics.verticalViewInsets
+    let height = headerHeight + configNoteHeight + okButtonHeight + typeSelectorHeight + Metrics.verticalViewInsets
     let verticalSpaces: CGFloat = 2
     return height + Metrics.verticalSpacing * verticalSpaces
   }
@@ -74,7 +80,7 @@ class ScienceKitSensorConfigViewController: ScienceJournalViewController {
     view.addSubview(stackView)
 
     headerLabel.text = String.titleActivitySensorSettings
-    headerLabel.font = MDCTypography.titleFont()
+    headerLabel.font = ArduinoTypography.boldHeadingFont
     headerLabel.translatesAutoresizingMaskIntoConstraints = false
     stackView.addArrangedSubview(headerLabel)
 
@@ -82,6 +88,24 @@ class ScienceKitSensorConfigViewController: ScienceJournalViewController {
     typeSelector.typeDelegate = self
     typeSelector.translatesAutoresizingMaskIntoConstraints = false
     stackView.addArrangedSubview(typeSelector)
+    
+    if let configNote = configNote {
+      // FIXME: Turn into localized string
+      let prefix = "Note: "
+      let content = prefix + configNote
+      let attributes = [NSAttributedString.Key.font : ArduinoTypography.noteFont]
+      let boldAttributes = [NSAttributedString.Key.font : ArduinoTypography.boldNoteFont]
+      let formattedConfigNote = NSMutableAttributedString(string:content, attributes: attributes)
+      formattedConfigNote.addAttributes(boldAttributes, range: NSRange(location: 0, length: prefix.count))
+            
+      configNoteLabel.translatesAutoresizingMaskIntoConstraints = false
+      configNoteLabel.numberOfLines = 0
+      configNoteLabel.lineBreakMode = .byWordWrapping
+      configNoteLabel.attributedText = formattedConfigNote
+      configNoteLabel.frame.size.width = Metrics.preferredWidth
+      configNoteLabel.sizeToFit()
+      stackView.addArrangedSubview(configNoteLabel)
+    }
 
     let buttonWrapper = UIView()
     buttonWrapper.translatesAutoresizingMaskIntoConstraints = false
@@ -110,7 +134,7 @@ class ScienceKitSensorConfigViewController: ScienceJournalViewController {
 
   private func setPreferredContentSize() {
     // When presented as a Material dialog, the preferred content size dictates its displayed size.
-    preferredContentSize = CGSize(width: 200, height: totalHeight)
+    preferredContentSize = CGSize(width: Metrics.preferredWidth, height: totalHeight)
   }
 }
 
