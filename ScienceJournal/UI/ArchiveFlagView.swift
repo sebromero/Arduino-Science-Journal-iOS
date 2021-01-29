@@ -69,7 +69,7 @@ class ArchivedFlagView: ShadowedView {
     archivedLabel.translatesAutoresizingMaskIntoConstraints = false
     archivedLabel.text = String.archivedBadge.uppercased()
     archivedLabel.textColor = textColor
-    archivedLabel.font = ArduinoTypography.badgeFont
+    archivedLabel.font = ArduinoTypography.noteFont
     archivedLabel.pinToEdgesOfView(self, withInsets: ArchivedFlagCell.labelInsets)
     archivedLabel.isAccessibilityElement = false
 
