@@ -47,6 +47,7 @@ protocol BLEArduinoSensor {
   var options: [BLEArduinoSensorConfig] { get }
 
   var config: BLEArduinoSensorConfig? { get set }
+  var configNote: String? { get }
 
   func point(for data: Data) -> Double
 }
@@ -55,6 +56,7 @@ extension BLEArduinoSensor {
   static var identifier: String { uuid.uuidString }
 
   var options: [BLEArduinoSensorConfig] { [] }
+  var configNote: String? { nil }
 }
 
 class BLEArduinoSensorInterface: BLESensorInterface {
@@ -150,6 +152,7 @@ class BLEArduinoSensorInterface: BLESensorInterface {
     let dialog =
       ScienceKitSensorConfigViewController(analyticsReporter: appDelegate.analyticsReporter)
     dialog.options = sensor.options
+    dialog.configNote = sensor.configNote
     dialog.config = sensor.config ?? .raw
 
     dialog.okButton.addTarget(self,

@@ -33,6 +33,8 @@ struct Nano33BLESenseResistanceSensor: BLEArduinoSensor {
   var unitDescription: String? { "k\u{03A9}" }
 
   var textDescription: String { "sensor_desc_short_mkrsci_resistance".localized }
+  
+  var configNote: String? { "Connect the resistor to pin A1 on your Nano 33 BLE Sense board." }
 
   var learnMoreInformation: Sensor.LearnMore {
     Sensor.LearnMore(firstParagraph: "",
